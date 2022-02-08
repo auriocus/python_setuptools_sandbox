@@ -1,14 +1,12 @@
 #! /usr/bin/env python3
 
-import os
-import re
 import sys
 import sysconfig
 import platform
 import subprocess
 
-from distutils.version import LooseVersion
-from setuptools import setup, Extension, find_packages
+from setuptools import Extension, find_packages
+from numpy.distutils.core import setup
 
 setup(
     name='setuptools_sandbox',
@@ -19,5 +17,6 @@ setup(
     long_description='',
     packages=find_packages('src'),
     package_dir={'':'src'},
+    ext_modules=[Extension('setuptools_sandbox/addfloats', ['src/setuptools_sandbox/some_ccode.c'])],
     zip_safe=False,
 )
