@@ -18,7 +18,7 @@ def ac_check_flag(flags, script):
 
     # Get compiler invocation
     compiler = os.environ.get('CC',
-                              sysconfig.get_config_var('CC'))
+                              sysconfig.get_config_var('CC')).split()
 
     for flag in flags:
         # Create a temporary directory
@@ -33,7 +33,7 @@ def ac_check_flag(flags, script):
         
         try:
             with open(os.devnull, 'w') as fnull:
-                compiler_result = subprocess.run([compiler, flag, filename], capture_output=True)
+                compiler_result = subprocess.run(compiler + [flag, filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 #print(compiler_result)
                 exit_code = compiler_result.returncode
         except OSError :
@@ -68,34 +68,22 @@ def check_for_openmp():
     ompflag  = ac_check_flag(ompflags, omptestprog);
 
     if ompflag == "":
-        print ("""WARNING
-OpenMP support is not available in your default C compiler
-The program will only run on a single core. 
-""")
-        if platform.uname()[0]=='Darwin':
-            print ("""Since you are running on Mac OS, it's likely that the problem here
-is Apple's Clang, which does not support OpenMP at all. The easiest
-way to get around this is to download the latest version of gcc from
-here: http://hpc.sourceforge.net. After downloading, just point the
-CC environment variable to the real gcc and OpenMP support should
-get enabled automatically. Something like this -
-sudo tar -xzf /path/to/download.tar.gz /
-export CC='/usr/local/bin/gcc'
-python setup.py clean
-python setup.py build
-""")
-            print ("""Continuing your build without OpenMP...\n""")
-
         return []
 
     return [ompflag]
 
 
-print("Checking for OpenMP support...\t")
+print("Checking for OpenMP support...\t", end="")
 
 extraompflag = check_for_openmp()
 
-print(extraompflag)
+print(" ".join(extraompflag))
+
+if extraompflag == []:
+    print ("""WARNING
+OpenMP support is not available in your default C compiler
+The program will only run on a single core. 
+""")
 
 setup(
     name='setuptools_sandbox',
