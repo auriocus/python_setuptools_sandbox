@@ -4,5 +4,5 @@ requires = ["setuptools", "wheel", "oldest-supported-numpy"]
 [tool.cibuildwheel]
 skip = ["pp*", "*musllinux*"]
 archs = ["auto64"]
-
+build-verbosity = 1
 
