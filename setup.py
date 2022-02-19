@@ -11,15 +11,19 @@ import numpy
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext as _build_ext
 
+import distutils.ccompiler
+import distutils.errors
+
 
 def ac_check_flag(flags, script):
     # emulate AC_CHECK_FLAG from autotools to test if the compiler
     # supports a given flag. Return the first working flag. 
 
     # Get compiler invocation
-    compiler = os.environ.get('CC',
-                              sysconfig.get_config_var('CC')).split()
-
+    
+    compiler = distutils.ccompiler.new_compiler()
+    distutils.sysconfig.customize_compiler(compiler)
+    
     for flag in flags:
         # Create a temporary directory
         tmpdir = tempfile.mkdtemp()
@@ -32,18 +36,16 @@ def ac_check_flag(flags, script):
             f.write(script)
         
         try:
-            with open(os.devnull, 'w') as fnull:
-                compiler_result = subprocess.run(compiler + [flag, filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                #print(compiler_result)
-                exit_code = compiler_result.returncode
-        except OSError :
-            exit_code = 1
+            compiler_result = compiler.compile(['flagtest.c'], extra_postargs=[flag])
+            success = True
+        except distutils.errors.CompileError:
+            success = False
 
         # Clean up
         os.chdir(curdir)
         shutil.rmtree(tmpdir)
         
-        if exit_code == 0:
+        if success:
             return flag
 
     return ""
