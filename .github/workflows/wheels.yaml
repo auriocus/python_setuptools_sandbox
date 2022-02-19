@@ -14,8 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Used to host cibuildwheel
       - uses: actions/setup-python@v2
+
+      - name: Install OpenMP compiler on macOS
+        if: ${{ matrix.os == 'macOS-10.15' }}
+        run: |
+            brew install llvm
+            echo "CC=/usr/local/bin/clang" >> $GITHUB_ENV
 
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.3.1
