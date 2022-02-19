@@ -94,7 +94,7 @@ setup(
     long_description='',
     packages=find_packages('src'),
     package_dir={'':'src'},
-    ext_modules=[Extension('setuptools_sandbox/addfloats', ['src/setuptools_sandbox/some_ccode.c'], 
+    ext_modules=[Extension('addfloats', ['src/setuptools_sandbox/some_ccode.c'], 
         extra_compile_args = extraompflag,
         extra_link_args = extraompflag)],
     zip_safe=False,
