@@ -21,6 +21,7 @@ jobs:
         run: |
             brew install llvm libomp
             echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+            echo "LDFLAGS=-L$(brew --prefix llvm)/lib" >> $GITHUB_ENV
 
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.3.1
