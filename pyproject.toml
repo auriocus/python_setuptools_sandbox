@@ -1,3 +1,8 @@
 [build-system]
-requires = ["setuptools", "wheel", "numpy >= 1.11"]
+requires = ["setuptools", "wheel", "oldest-supported-numpy"]
+
+[tool.cibuildwheel]
+skip = ["pp*", "*musllinux*"]
+archs = ["auto64"]
+
 
