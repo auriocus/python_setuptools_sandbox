@@ -19,7 +19,7 @@ jobs:
       - name: Activate OpenMP compiler on macOS
         if: ${{ matrix.os == 'macOS-10.15' }}
         run: |
-            # brew install llvm
+            brew install llvm libomp
             echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
 
       - name: Install cibuildwheel
