@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-
 import os
 import sys
 import sysconfig
@@ -8,8 +7,9 @@ import subprocess
 import tempfile
 import shutil
 
-from setuptools import Extension, find_packages, setup
 import numpy
+from setuptools import Extension, find_packages, setup
+from setuptools.command.build_ext import build_ext as _build_ext
 
 
 def ac_check_flag(flags, script):
@@ -73,17 +73,29 @@ def check_for_openmp():
     return [ompflag]
 
 
-print("Checking for OpenMP support...\t", end="")
 
-extraompflag = check_for_openmp()
+class build_ext(_build_ext):
+    # find openMP options, if available
+    def finalize_options(self):
+        _build_ext.finalize_options(self)
+        print("Checking for OpenMP support...\t", end="")
 
-print(" ".join(extraompflag))
+        extraompflag = check_for_openmp()
 
-if extraompflag == []:
-    print ("""WARNING
-OpenMP support is not available in your default C compiler
-The program will only run on a single core. 
-""")
+        print(" ".join(extraompflag))
+
+        if extraompflag == []:
+            print ("""WARNING
+        OpenMP support is not available in your default C compiler
+        The program will only run on a single core. 
+        """)
+        
+        for ext in self.extensions:
+            ext.extra_compile_args.extend(extraompflag)
+            ext.extra_link_args.extend(extraompflag)
+            print("Current value: ",ext.extra_compile_args)
+            pass
+
 
 numpyinclude = numpy.get_include()
 
@@ -97,8 +109,8 @@ setup(
     packages=find_packages('src'),
     package_dir={'':'src'},
     ext_modules=[Extension('setuptools_sandbox.addfloats', ['src/setuptools_sandbox/some_ccode.c'], 
-        extra_compile_args = extraompflag,
-        extra_link_args = extraompflag,
         include_dirs=[numpyinclude])],
+    
+    cmdclass={'build_ext':build_ext},
     zip_safe=False,
 )
