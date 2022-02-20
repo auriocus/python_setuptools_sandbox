@@ -57,7 +57,11 @@ def check_for_openmp():
     Goldbaum. See https://github.com/pynbody/pynbody/issues/124"""
         
     omptestprog = '''
+        #ifdef _OPENMP
         #include <omp.h>
+        #else
+        #error No OpenMP support
+        #endif
         #include <stdio.h>
         int main() {
             #pragma omp parallel
@@ -102,12 +106,6 @@ class build_ext(_build_ext):
 numpyinclude = numpy.get_include()
 
 setup(
-    name='setuptools_sandbox',
-    version='0.1',
-    author='Christian Gollwitzer',
-    author_email='auriocus@gmx.de',
-    description='A python module with a C extension',
-    long_description='',
     packages=find_packages('src'),
     package_dir={'':'src'},
     ext_modules=[Extension('setuptools_sandbox.addfloats', ['src/setuptools_sandbox/some_ccode.c'], 

@@ -1,3 +1,10 @@
+[project]
+name="setuptools_sandbox"
+version="0.1.1"
+author="Christian Gollwitzer"
+author_email="auriocus@gmx.de"
+description="A python module with an OpenMP C extension"
+
 [build-system]
 requires = ["setuptools", "wheel", "oldest-supported-numpy"]
 
@@ -5,4 +12,5 @@ requires = ["setuptools", "wheel", "oldest-supported-numpy"]
 skip = ["pp*", "*musllinux*"]
 archs = ["auto64"]
 build-verbosity = 1
+
 
