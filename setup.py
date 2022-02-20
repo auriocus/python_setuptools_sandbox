@@ -105,7 +105,18 @@ class build_ext(_build_ext):
 
 numpyinclude = numpy.get_include()
 
+# read the contents of your README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
 setup(
+    name='setuptools_sandbox',
+    version='0.1.1',
+    author='Christian Gollwitzer',
+    author_email='auriocus@gmx.de',
+    description='A python module with a C extension',
+    long_description=long_description,
     packages=find_packages('src'),
     package_dir={'':'src'},
     ext_modules=[Extension('setuptools_sandbox.addfloats', ['src/setuptools_sandbox/some_ccode.c'], 
