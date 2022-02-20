@@ -31,7 +31,7 @@ static PyObject* makefloats(PyObject* self, PyObject* args)
     PyArrayObject *result =  (PyArrayObject *)PyArray_SimpleNew(1, dims, NPY_FLOAT64);
     
 	#pragma omp parallel for
-    for (Py_ssize_t i = 0; i < Npoints; ++i) {
+    for (int i = 0; i < Npoints; ++i) {
 		*((double *)(PyArray_GETPTR1(result, i))) = i*i;
 
     }
